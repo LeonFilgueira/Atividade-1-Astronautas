@@ -30,6 +30,7 @@ void Controle::cadastrar_astronauta(string cpf, int idade, string nome) {
         cout << "Erro: Já existe um astronauta com o cpf " << cpf << " cadastrado" << endl;
     } else {
         astronautas.push_back(Astronauta(cpf, nome, idade));
+        cout << "Astronauta de cpf " << cpf << "cadastrado com sucesso" << endl;
     }
 }
 
@@ -38,6 +39,7 @@ void Controle::cadastrar_voo(int codigo) {
         cout << "Erro: Já existe um voo com o código " << codigo << endl;
     } else {
         voos.push_back(Voo(codigo));
+        cout << "Voo de código " << codigo << "cadastrado com sucesso" << endl;
     }
 }
 
@@ -51,6 +53,7 @@ void Controle::adicionar_astronauta(string cpf, int codigo) {
                 if (astronautas[indice_astronauta].vida) {
                     if (voos[indice_voo].passageiros.empty()) {
                         voos[indice_voo].passageiros.push_back(cpf);
+                        cout << "O astronauta de cpf " << cpf << " foi adicionado ao voo de código " << codigo << endl;
                     }else {
                         for (int ii = 0; ii < voos[indice_voo].passageiros.size(); ++ii) {
                             if (voos[indice_voo].passageiros[ii] == cpf) {
@@ -59,6 +62,7 @@ void Controle::adicionar_astronauta(string cpf, int codigo) {
                             }
                         }
                         voos[indice_voo].passageiros.push_back(cpf);
+                        cout << "O astronauta de cpf " << cpf << " foi adicionado ao voo de código " << codigo << endl;
                     }
                 } else {
                     cout << "Erro: o astronauta cadastado com o cpf " << cpf << " está morto" << endl;
@@ -83,6 +87,8 @@ void Controle::remover_astronauta(string cpf, int codigo) {
             if (voos[indice_voo].estado == Estado::Planejado) {
                 for (int ii = 0; ii < voos[indice_voo].passageiros.size(); ++ii) {
                     if (voos[indice_voo].passageiros[ii] == cpf) {
+                        voos[indice_voo].passageiros[ii].erase(voos[indice_voo].passageiros[ii].begin() + ii);
+                        cout << "O astronauta de cpf " << cpf << "foi removido do voo de código " << codigo << endl;
                         return;
                     }
                 }
@@ -117,6 +123,7 @@ void Controle::lancar_voo(int codigo) {
                 for (int ii = 0; ii < voos[indice_voo].passageiros.size(); ++ii) {
                     astronautas[buscar_astronauta(voos[indice_voo].passageiros[ii])].ocupar();
                 }
+                cout << "O voo de código " << codigo << " foi lançado com sucesso" << endl;
             }
         } else {
             cout << "Erro: o voo de código " << codigo << " não está planejado" << endl;
@@ -135,6 +142,7 @@ void Controle::explodir_voo(int codigo) {
                 astronautas[buscar_astronauta(voos[indice_voo].passageiros[ii])].morrer();
             }
             voos[indice_voo].alterar_estado(Estado::FinalizadoExplosão);
+            cout << "O voo de código " << codigo << " sofreu uma explosão" << endl;
         } else {
             cout << "Erro: o voo de código " << codigo << " não está em curso" << endl;
         }
@@ -152,6 +160,7 @@ void Controle::finalizar_voo(int codigo) {
             for (int ii = 0; ii < voos[indice_voo].passageiros.size(); ++ii) {
                 astronautas[buscar_astronauta(voos[indice_voo].passageiros[ii])].desocupar();
             }
+            cout << "O voo de código " << codigo << " foi finalizado com sucesso" << endl;
         } else {
             cout << "Erro: o voo de código " << codigo << " não está em curso" << endl;
         }
@@ -161,6 +170,7 @@ void Controle::finalizar_voo(int codigo) {
 }
 
 void Controle::listar_voos() {
+    cout << "\n===LISTANDO VOOS CADASTRADOS===\n" << endl;
     for (int ii = 0; ii < voos.size(); ++ii) {
         if (voos[ii].estado == Estado::Planejado) {
             cout << "Código de voo: " << voos[ii].codigo << endl;
@@ -213,10 +223,11 @@ void Controle::listar_voos() {
             cout << "\n" << endl;
         }
     }
+    cout << "====FIM DA LISTAGEM DE VOOS====\n" << endl;
 }
 
 void Controle::listar_mortos() {
-    cout << "\nLISTANDO MORTOS\n" << endl;
+    cout << "\n========LISTANDO MORTOS========\n" << endl;
     for (int ii = 0; ii < astronautas.size(); ++ii) {
         if (not astronautas[ii].vida) {
             cout << "CPF: " << astronautas[ii].cpf << endl;
@@ -233,4 +244,5 @@ void Controle::listar_mortos() {
             cout << "\n" << endl;
         }
     }
+    cout << "\n===FIM DA LISTAGEM DE MORTOS===\n" << endl;
 }
